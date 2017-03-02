@@ -134,7 +134,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	return nil, nil
 }
 
-func (t *CustomerChaincode)  UpdateCustomer(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
+func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
 return nil, nil
 }
 
