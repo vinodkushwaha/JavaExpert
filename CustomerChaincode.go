@@ -101,11 +101,6 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	var err error
 	var resAsBytes []byte
 
-	var MyFiles  *log.Logger
-    MyFiles = log.New(file,
-      "PREFIX: ",
-        log.Ldate|log.Ltime|log.Lshortfile)
-	MyFiles.Println("Special Information in Myfile for invoke")
 	PAN_NUMBER = args[3]
 	AADHAR_NUMBER = args[4]
 	
