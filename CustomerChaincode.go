@@ -386,9 +386,13 @@ func (t *CustomerChaincode)  GetCustomerDetailsforUpdate(stub shim.ChaincodeStub
 		}
 		return res, nil
 	} else {
-		return nil, nil
+		res, err := json.Marshal("No Data found")
+		if err != nil {
+		return nil, errors.New("Failed to Marshal the required Obj")
+		}
+		return res, nil
 	}
-	
+	return res, nil
 }
 
 
