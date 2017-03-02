@@ -95,10 +95,47 @@ func (t *CustomerChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 
 // Add customer data for the policy
 func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	if function == customerIndexTxStr {
-		return t.RegisterCustomer(stub, args)
+
+	var PAN_NUMBER string // Entities
+	var AADHAR_NUMBER string
+	var err error
+	var resAsBytes []byte
+
+	var MyFile  *log.Logger
+    MyFile = log.New(file,
+      "PREFIX: ",
+        log.Ldate|log.Ltime|log.Lshortfile)
+	MyFile.Println("Special Information in Myfile for invoke")
+	PAN_NUMBER = args[3]
+	AADHAR_NUMBER = args[4]
+	
+	
+	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
+	
+	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
+  	
+    if len(resAsBytes) > 0{
+	
+	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
+	resAsBytes, err = t.UpdateCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
+	 if err != nil {
+	   fmt.Printf("error while updateing Customer KYC")
+
+		}
+	
+	
+	} else {
+      if err != nil {
+	   fmt.Printf("logic for new Customer KYC insertion")
+	   return t.RegisterCustomer(stub, args)
+		}
 	}
+	
 	return nil, nil
+}
+
+func (t *CustomerChaincode)  UpdateCustomer(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
+return nil, nil
 }
 
 func (t *CustomerChaincode)  RegisterCustomer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
