@@ -110,7 +110,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	p("Contains No data found :  ", s.Contains(string(resAsBytes) , "No Data found"))
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
   	
-    if len(resAsBytes) > 15{
+    if !s.Contains(string(resAsBytes) , "No Data found") {
 	
 	fmt.Printf("logic for update Customer KYC length :%s\n", len(resAsBytes))
 	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
