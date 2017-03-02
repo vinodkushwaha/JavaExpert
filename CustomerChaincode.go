@@ -121,10 +121,9 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 		}
 		
 	} else {
-      if err != nil {
-	   fmt.Printf("logic for new Customer KYC insertion")
+      	   fmt.Printf("logic for new Customer KYC insertion")
 	   return t.RegisterCustomer(stub, args)
-		}
+		
 	}
 	
 	return nil, nil
