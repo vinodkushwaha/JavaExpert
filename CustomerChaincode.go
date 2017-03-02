@@ -107,17 +107,18 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
 	
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
-
+  	
     if len(resAsBytes) > 0{
 	
 	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
 	
 	} else {
-       if function == customerIndexTxStr {
+      if err != nil {
 	   fmt.Printf("logic for new Customer KYC insertion")
 	   return t.RegisterCustomer(stub, args)
+		}
 	}
-	}
+	
 	return nil, nil
 }
 
