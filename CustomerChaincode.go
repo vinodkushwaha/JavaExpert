@@ -109,7 +109,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
   	
-    if len(resAsBytes) > 0{
+    if len(resAsBytes) > 15{
 	
 	fmt.Printf("logic for update Customer KYC length :%s\n", len(resAsBytes))
 	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
@@ -118,8 +118,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	   fmt.Printf("error while updateing Customer KYC")
 
 		}
-	
-	
+		
 	} else {
       if err != nil {
 	   fmt.Printf("logic for new Customer KYC insertion")
