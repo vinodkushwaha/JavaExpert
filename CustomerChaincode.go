@@ -107,7 +107,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	
 	
 	resAsBytes, err = t.GetCustomerDetailsforUpdate(stub, PAN_NUMBERS, AADHAR_NUMBERS)
-	p("Contains No data found :  ", s.Contains(resAsBytes , "No Data found"))
+	p("Contains No data found :  ", s.Contains(string(resAsBytes) , "No Data found"))
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
   	
     if len(resAsBytes) > 15{
