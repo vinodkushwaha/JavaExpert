@@ -105,7 +105,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	AADHAR_NUMBERS = args[4]
 	
 	
-	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS)
+	resAsBytes, err = t.GetCustomerDetailsforUpdate(stub, PAN_NUMBERS, AADHAR_NUMBERS)
 	
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
   	
@@ -333,6 +333,64 @@ func (t *CustomerChaincode)  GetCustomerDetails(stub shim.ChaincodeStubInterface
 		return res, nil
 	}
 }
+
+func (t *CustomerChaincode)  GetCustomerDetailsforUpdate(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
+
+	//var requiredObj CustomerData
+	var objFound bool
+	CustomerTxsAsBytes, err := stub.GetState(customerIndexTxStr)
+	if err != nil {
+		return nil, errors.New("Failed to get Customer Records")
+	}
+	var CustomerTxObjects []CustomerData
+	var CustomerTxObjects1 []CustomerData
+	json.Unmarshal(CustomerTxsAsBytes, &CustomerTxObjects)
+	length := len(CustomerTxObjects)
+	fmt.Printf("Output from chaincode: %s\n", CustomerTxsAsBytes)
+
+	if PAN_NUMBER == "" && AADHAR_NUMBER == ""{
+		res, err := json.Marshal(CustomerTxObjects)
+		if err != nil {
+		return nil, errors.New("Failed to Marshal the required Obj")
+		}
+		return res, nil
+	}
+
+	objFound = false
+	// iterate
+	for i := 0; i < length; i++ {
+		obj := CustomerTxObjects[i]
+		//if ((customer_id == obj.CUSTOMER_ID) && (customer_name == obj.CUSTOMER_NAME) && (customer_dob == obj.CUSTOMER_DOB)) 
+		
+	if (PAN_NUMBER != ""){
+		if ((obj.PAN_NUMBER) == PAN_NUMBER){
+			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
+			//requiredObj = obj
+			objFound = true
+			break;
+		}
+	}else {
+		if ((obj.AADHAR_NUMBER) == AADHAR_NUMBER){
+			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
+			//requiredObj = obj
+			objFound = true
+			break;
+		}
+	}
+	}
+
+	if objFound {
+		res, err := json.Marshal(CustomerTxObjects1)
+		if err != nil {
+		return nil, errors.New("Failed to Marshal the required Obj")
+		}
+		return res, nil
+	} else {
+		return nil, nil
+	}
+	
+}
+
 
 func main() {
 	err := shim.Start(new(CustomerChaincode))
