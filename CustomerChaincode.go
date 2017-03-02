@@ -368,9 +368,6 @@ func (t *CustomerChaincode)  UpdateCustomer(stub shim.ChaincodeStubInterface, PA
 			break;
 		}
 	}
-	obj.CUSTOMER_NAME.CUSTOMER_FIRST_NAME := args[0]
-	obj.CUSTOMER_NAME.CUSTOMER_MIDDLE_NAME := args[1]
-	obj.CUSTOMER_NAME.CUSTOMER_LAST_NAME   := args[2]
 	obj.CUSTOMER_DOB := args[5]
 	}
 
