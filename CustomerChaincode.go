@@ -8,9 +8,9 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	//"github.com/golang/protobuf/ptypes/timestamp"
 	"io"
-    "io/ioutil"
-    "log"
-    "os"
+        "io/ioutil"
+        "log"
+        "os"
 )
 
 // Customer Chaincode implementation
@@ -95,39 +95,11 @@ func (t *CustomerChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 
 // Add customer data for the policy
 func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-
-	var PAN_NUMBER string // Entities
-	var AADHAR_NUMBER string
-	var err error
-	var resAsBytes []byte
-
-	PAN_NUMBER = args[3]
-	AADHAR_NUMBER = args[4]
-	
-	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
-	
-	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
-  	
-    if len(resAsBytes) > 0{
-	
-	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
-	resAsBytes, err = t.UpdateCustomer(stub, PAN_NUMBER, AADHAR_NUMBER)
-	 if err != nil {
-	   fmt.Printf("error while updateing Customer KYC")
-
-		}
-	
-	
-	} else {
-      if err != nil {
-	   fmt.Printf("logic for new Customer KYC insertion")
-	   return t.RegisterCustomer(stub, args)
-		}
+	if function == customerIndexTxStr {
+		return t.RegisterCustomer(stub, args)
 	}
-	
 	return nil, nil
 }
-
 
 func (t *CustomerChaincode)  RegisterCustomer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
@@ -315,66 +287,6 @@ func (t *CustomerChaincode)  GetCustomerDetails(stub shim.ChaincodeStubInterface
 	}
 	}
 
-	if objFound {
-		res, err := json.Marshal(CustomerTxObjects1)
-		if err != nil {
-		return nil, errors.New("Failed to Marshal the required Obj")
-		}
-		return res, nil
-	} else {
-		res, err := json.Marshal("No Data found")
-		if err != nil {
-		return nil, errors.New("Failed to Marshal the required Obj")
-		}
-		return res, nil
-	}
-}
-
-func (t *CustomerChaincode)  UpdateCustomer(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
-
-	//var requiredObj CustomerData
-	var objFound bool
-	CustomerTxsAsBytes, err := stub.GetState(customerIndexTxStr)
-	if err != nil {
-		return nil, errors.New("Failed to get Customer Records")
-	}
-	var CustomerTxObjects []CustomerData
-	var CustomerTxObjects1 []CustomerData
-	json.Unmarshal(CustomerTxsAsBytes, &CustomerTxObjects)
-	length := len(CustomerTxObjects)
-	fmt.Printf("Output from UpdateCustomer chaincode: %s\n", CustomerTxsAsBytes)
-
-	if PAN_NUMBER == "" && AADHAR_NUMBER == ""{
-		res, err := json.Marshal(CustomerTxObjects)
-		if err != nil {
-		return nil, errors.New("Failed to Marshal the required Obj Pancard and Aadhar Number")
-		}
-		return res, nil
-	}
-
-	objFound = false
-	// iterate
-	for i := 0; i < length; i++ {
-		obj := CustomerTxObjects[i]
-		//if ((customer_id == obj.CUSTOMER_ID) && (customer_name == obj.CUSTOMER_NAME) && (customer_dob == obj.CUSTOMER_DOB)) 
-		
-	if (PAN_NUMBER != ""){
-		if ((obj.PAN_NUMBER) == PAN_NUMBER){
-			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
-			//requiredObj = obj
-			objFound = true
-			break;
-		}
-	}else {
-		if ((obj.AADHAR_NUMBER) == AADHAR_NUMBER){
-			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
-			//requiredObj = obj
-			objFound = true
-			break;
-		}
-	}
-	}
-	//obj.CUSTOMER_DOB = args[5]
 	if objFound {
 		res, err := json.Marshal(CustomerTxObjects1)
 		if err != nil {
