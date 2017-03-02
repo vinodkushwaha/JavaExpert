@@ -96,16 +96,16 @@ func (t *CustomerChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 // Add customer data for the policy
 func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
-	var PAN_NUMBER string // Entities
-	var AADHAR_NUMBER string
+	var PAN_NUMBERS string // Entities
+	var AADHAR_NUMBERS string
 	var err error
 	var resAsBytes []byte
 
-	PAN_NUMBER = args[3]
-	AADHAR_NUMBER = args[4]
+	PAN_NUMBERS = args[3]
+	AADHAR_NUMBERS = args[4]
 	
 	
-	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
+	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS)
 	
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
   	
