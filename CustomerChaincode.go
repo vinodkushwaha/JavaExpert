@@ -374,7 +374,7 @@ func (t *CustomerChaincode)  UpdateCustomer(stub shim.ChaincodeStubInterface, PA
 		}
 	}
 	}
-	obj.CUSTOMER_DOB = args[5]
+	//obj.CUSTOMER_DOB = args[5]
 return nil, nil
 }
 
