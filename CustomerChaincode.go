@@ -111,7 +111,12 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
     if len(resAsBytes) > 0{
 	
 	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
-	return t.UpdateCustomer(stub, PAN_NUMBER, AADHAR_NUMBER)
+	resAsBytes, err = t.UpdateCustomer(stub, PAN_NUMBER, AADHAR_NUMBER)
+	 if err != nil {
+	   fmt.Printf("error while updateing Customer KYC")
+
+		}
+	
 	
 	} else {
       if err != nil {
