@@ -392,7 +392,7 @@ func (t *CustomerChaincode)  GetCustomerDetailsforUpdate(stub shim.ChaincodeStub
 		}
 		return res, nil
 	}
-	return res, nil
+	
 }
 
 
