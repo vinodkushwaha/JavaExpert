@@ -375,7 +375,19 @@ func (t *CustomerChaincode)  UpdateCustomer(stub shim.ChaincodeStubInterface, PA
 	}
 	}
 	//obj.CUSTOMER_DOB = args[5]
-return nil, nil
+	if objFound {
+		res, err := json.Marshal(CustomerTxObjects1)
+		if err != nil {
+		return nil, errors.New("Failed to Marshal the required Obj")
+		}
+		return res, nil
+	} else {
+		res, err := json.Marshal("No Data found")
+		if err != nil {
+		return nil, errors.New("Failed to Marshal the required Obj")
+		}
+		return res, nil
+	}
 }
 
 func main() {
