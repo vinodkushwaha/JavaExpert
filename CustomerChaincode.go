@@ -127,15 +127,113 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	return nil, nil
 }
 
-func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string, args []string) ([]byte, error) {
-	var err error
-	var resAsBytes []byte
-	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
-    fmt.Printf("inside UpdateCustomerDetails function :%s\n", resAsBytes)
-     if err != nil {
-		return nil, errors.New("Failed to update Customer KYC")
+func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	if len(args) < 4 {
+		return nil, errors.New("Incorrect number of arguments. Need 4 arguments")
 	}
-    return nil, nil
+	
+	var PAN_NUMBERS string // Entities
+	var AADHAR_NUMBERS string
+	PAN_NUMBERS = args[3]
+	AADHAR_NUMBERS = args[4]
+	
+	
+	//var requiredObj CustomerData
+	var objFound bool
+	CustomerTxsAsBytes, err := stub.GetState(customerIndexTxStr)
+	if err != nil {
+		return nil, errors.New("Failed to get Customer Records")
+	}
+	var CustomerTxObjects []CustomerData
+	var CustomerTxObjects1 []CustomerData
+	json.Unmarshal(CustomerTxsAsBytes, &CustomerTxObjects)
+	length := len(CustomerTxObjects)
+	fmt.Printf("Output from chaincode: %s\n", CustomerTxsAsBytes)
+
+	
+	objFound = false
+	// iterate
+	for i := 0; i < length; i++ {
+		obj := CustomerTxObjects[i]
+		//if ((customer_id == obj.CUSTOMER_ID) && (customer_name == obj.CUSTOMER_NAME) && (customer_dob == obj.CUSTOMER_DOB)) 
+		
+	if (PAN_NUMBER != ""){
+		if ((obj.PAN_NUMBER) == PAN_NUMBER){
+			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
+			//requiredObj = obj
+			objFound = true
+			break;
+		}
+	}else {
+		if ((obj.AADHAR_NUMBER) == AADHAR_NUMBER){
+			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
+			//requiredObj = obj
+			objFound = true
+			break;
+		}
+	}
+	}
+
+	if objFound {
+		
+		//Update CustomerTxObjects1 with new values from args 
+		
+		CustomerTxObjects1[0].CUSTOMER_NAME.CUSTOMER_FIRST_NAME = args[0]
+		CustomerTxObjects1[0].CUSTOMER_NAME.CUSTOMER_MIDDLE_NAME = args[1]
+		CustomerTxObjects1[0].CUSTOMER_NAME.CUSTOMER_LAST_NAME   = args[2]
+		CustomerTxObjects1[0].PAN_NUMBER = args[3]
+		CustomerTxObjects1[0].AADHAR_NUMBER = args[4]
+		CustomerTxObjects1[0].CUSTOMER_DOB = args[5]
+		CustomerTxObjects1[0].CUSTOMER_RESIDENT_STATUS = args[6]
+		CustomerTxObjects1[0].CUSTOMER_KYC_PROCESS_DATE = args[7]
+		CustomerDataObj.CUSTOMER_KYC_FLAG = args[8]
+		//Code for CustomerResidenceAddr Initialization
+		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.AddressLine1 = args[9]
+		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.AddressLine2 = args[10]
+		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.PostalCode   = args[11]
+		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.City = args[12]
+		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.Province = args[13]
+		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.Country   = args[14]
+		//Code for CustomerPermanentAddr Initialization
+		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.AddressLine1 = args[15]
+		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.AddressLine2 = args[16]
+		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.PostalCode   = args[17]
+		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.City = args[18]
+		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.Province = args[19]
+		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.Country   = args[20]
+		//Code for CustomerOfficeAddr Initialization
+		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.AddressLine1 = args[21]
+		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.AddressLine2 = args[22]
+		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.PostalCode   = args[23]
+		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.City = args[24]
+		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.Province = args[25]
+		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.Country   = args[26]
+		//Code for the Document Process	
+		fmt.Printf("********pankaj CUSTOMER_DOC:%s\n", args[4])
+		var number_of_docs int
+		number_of_docs = (len(args)-27)/2
+		var CustomerDocObjects1 []CustomerDoc
+		for i := 0; i < number_of_docs; i++ {
+			var CustomerDocObj CustomerDoc
+			fmt.Printf("********pankaj CustomerDocObj[i].DOCUMENT_NAMEC:%d\n",i)
+			fmt.Printf("********pankaj CustomerDocObj[i].DOCUMENT_NAMEC:%d\n",number_of_docs)
+			//CustomerDocObj[i] := CustomerDoc{DOCUMENT_NAME: args[27+(i*2)], DOCUMENT_STRING: args[27+(i*2)]}
+			CustomerDocObj.DOCUMENT_NAME = args[27+(i*2)]
+			//fmt.Printf("********pankaj CustomerDocObj[i].DOCUMENT_NAMEC:%s\n", CustomerDocObj[i].DOCUMENT_NAME)
+			CustomerDocObj.DOCUMENT_STRING = args[28+(i*2)]
+			CustomerDocObjects1 = append(CustomerDocObjects1,CustomerDocObj)
+		}
+		CustomerTxObjects1[0].CUSTOMER_DOC = CustomerDocObjects1
+		
+		jsonAsBytes, _ := json.Marshal(CustomerTxObjects)
+
+		err = stub.PutState(customerIndexTxStr, jsonAsBytes)
+		if err != nil {
+			return nil, err
+		}
+	    return nil, nil
+	} 
 }
 
 func (t *CustomerChaincode)  RegisterCustomer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -339,66 +437,7 @@ func (t *CustomerChaincode)  GetCustomerDetails(stub shim.ChaincodeStubInterface
 	}
 }
 
-func (t *CustomerChaincode)  GetCustomerDetailsforUpdate(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
 
-	//var requiredObj CustomerData
-	var objFound bool
-	CustomerTxsAsBytes, err := stub.GetState(customerIndexTxStr)
-	if err != nil {
-		return nil, errors.New("Failed to get Customer Records")
-	}
-	var CustomerTxObjects []CustomerData
-	var CustomerTxObjects1 []CustomerData
-	json.Unmarshal(CustomerTxsAsBytes, &CustomerTxObjects)
-	length := len(CustomerTxObjects)
-	fmt.Printf("Output from chaincode: %s\n", CustomerTxsAsBytes)
-
-	if PAN_NUMBER == "" && AADHAR_NUMBER == ""{
-		res, err := json.Marshal(CustomerTxObjects)
-		if err != nil {
-		return nil, errors.New("Failed to Marshal the required Obj")
-		}
-		return res, nil
-	}
-
-	objFound = false
-	// iterate
-	for i := 0; i < length; i++ {
-		obj := CustomerTxObjects[i]
-		//if ((customer_id == obj.CUSTOMER_ID) && (customer_name == obj.CUSTOMER_NAME) && (customer_dob == obj.CUSTOMER_DOB)) 
-		
-	if (PAN_NUMBER != ""){
-		if ((obj.PAN_NUMBER) == PAN_NUMBER){
-			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
-			//requiredObj = obj
-			objFound = true
-			break;
-		}
-	}else {
-		if ((obj.AADHAR_NUMBER) == AADHAR_NUMBER){
-			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
-			//requiredObj = obj
-			objFound = true
-			break;
-		}
-	}
-	}
-
-	if objFound {
-		res, err := json.Marshal(CustomerTxObjects1)
-		if err != nil {
-		return nil, errors.New("Failed to Marshal the required Obj")
-		}
-		return res, nil
-	} else {
-		res, err := json.Marshal("No Data found")
-		if err != nil {
-		return nil, errors.New("Failed to Marshal the required Obj")
-		}
-		return res, nil
-	}
-	
-}
 
 
 func main() {
