@@ -96,47 +96,22 @@ func (t *CustomerChaincode) Init(stub shim.ChaincodeStubInterface, function stri
 
 // Add customer data for the policy
 func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-
-	var PAN_NUMBERS string // Entities
-	var AADHAR_NUMBERS string
-	var err error
-	var resAsBytes []byte
-    var p = fmt.Println
-	PAN_NUMBERS = args[3]
-	AADHAR_NUMBERS = args[4]
 	
+	return t.UpdateOrRegisterCustomerDetails(stub ,args)
 	
-	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS)
-	p("Contains No data found :  ", s.Contains(string(resAsBytes) , "No Data found"))
-	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
-  	
-    if !s.Contains(string(resAsBytes) , "No Data found") {
-	
-	fmt.Printf("====Update functionality call for Existing Customer KYC======")
-	
-	return t.UpdateCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS ,args)
-    		
-	} else {
-      	   fmt.Printf("logic for new Customer KYC insertion")
-	   return t.RegisterCustomer(stub, args)
-		
-	}
-	 if err != nil {
-		return nil, errors.New("Failed to Invoke Customer KYC")
-	}
 	return nil, nil
 }
 
-func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	
 	if len(args) < 4 {
 		return nil, errors.New("Incorrect number of arguments. Need 4 arguments")
 	}
 	
-	var PAN_NUMBERS string // Entities
-	var AADHAR_NUMBERS string
-	PAN_NUMBERS = args[3]
-	AADHAR_NUMBERS = args[4]
+	var PAN_NUMBER string // Entities
+	var AADHAR_NUMBER string
+	PAN_NUMBER = args[3]
+	AADHAR_NUMBER = args[4]
 	
 	
 	//var requiredObj CustomerData
@@ -187,7 +162,7 @@ func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterf
 		CustomerTxObjects1[0].CUSTOMER_DOB = args[5]
 		CustomerTxObjects1[0].CUSTOMER_RESIDENT_STATUS = args[6]
 		CustomerTxObjects1[0].CUSTOMER_KYC_PROCESS_DATE = args[7]
-		CustomerDataObj.CUSTOMER_KYC_FLAG = args[8]
+		CustomerTxObjects1[0].CUSTOMER_KYC_FLAG = args[8]
 		//Code for CustomerResidenceAddr Initialization
 		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.AddressLine1 = args[9]
 		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.AddressLine2 = args[10]
@@ -233,7 +208,12 @@ func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterf
 			return nil, err
 		}
 	    return nil, nil
-	} 
+	} else{
+		
+		return t.RegisterCustomer(stub ,args)
+	
+	}
+	
 }
 
 func (t *CustomerChaincode)  RegisterCustomer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
