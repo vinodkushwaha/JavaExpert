@@ -106,7 +106,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	AADHAR_NUMBERS = args[4]
 	
 	
-	resAsBytes, err = t.GetCustomerDetailsforUpdate(stub, PAN_NUMBERS, AADHAR_NUMBERS)
+	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS)
 	p("Contains No data found :  ", s.Contains(string(resAsBytes) , "No Data found"))
 	fmt.Printf("Query Response in case of Invoke :%s\n", resAsBytes)
   	
@@ -121,7 +121,9 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	   return t.RegisterCustomer(stub, args)
 		
 	}
-	
+	 if err != nil {
+		return nil, errors.New("Failed to Invoke Customer KYC")
+	}
 	return nil, nil
 }
 
