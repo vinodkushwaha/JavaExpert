@@ -112,15 +112,10 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
   	
     if !s.Contains(string(resAsBytes) , "No Data found") {
 	
-	fmt.Printf("Existing Customer KYC found with details :%s\n", resAsBytes)
-	resAsBytes, err = t.UpdateCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS)
-	 if resAsBytes == nil {
-	   fmt.Printf("error while updateing Customer KYC")
-        if err != nil {
-		return nil, errors.New("Failed to get customer for error")
-	}
-		}
-		
+	fmt.Printf("====Update functionality call for Existing Customer KYC======")
+	
+	return t.UpdateCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS ,args)
+    		
 	} else {
       	   fmt.Printf("logic for new Customer KYC insertion")
 	   return t.RegisterCustomer(stub, args)
@@ -130,10 +125,9 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 	return nil, nil
 }
 
-func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
+func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string, args []string) ([]byte, error) {
 	var err error
 	var resAsBytes []byte
-	
 	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
     fmt.Printf("inside UpdateCustomerDetails function :%s\n", resAsBytes)
      if err != nil {
