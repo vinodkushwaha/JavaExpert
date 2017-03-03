@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"	
+	"errors"
 	"fmt"
 	//"strconv"
 	"encoding/json"
@@ -201,6 +201,7 @@ func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.Chaincode
 		CustomerTxObjects1[0].CUSTOMER_DOC = CustomerDocObjects1
 		
 		jsonAsBytes, _ := json.Marshal(CustomerTxObjects)
+		fmt.Printf("======json print ====:%s\n", jsonAsBytes)
 
 		err = stub.PutState(customerIndexTxStr, jsonAsBytes)
 		if err != nil {
