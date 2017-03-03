@@ -127,6 +127,7 @@ func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.Chaincode
 
 	
 	objFound = false
+	var counter int
 	// iterate
 	for i := 0; i < length; i++ {
 		obj := CustomerTxObjects[i]
@@ -137,6 +138,7 @@ func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.Chaincode
 			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
 			//requiredObj = obj
 			objFound = true
+			counter = i
 			break;
 		}
 	}else {
@@ -144,6 +146,7 @@ func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.Chaincode
 			CustomerTxObjects1 = append(CustomerTxObjects1,obj)
 			//requiredObj = obj
 			objFound = true
+			counter = i
 			break;
 		}
 	}
@@ -153,36 +156,36 @@ func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.Chaincode
 		
 		//Update CustomerTxObjects1 with new values from args 
 		
-		CustomerTxObjects1[0].CUSTOMER_NAME.CUSTOMER_FIRST_NAME = args[0]
-		CustomerTxObjects1[0].CUSTOMER_NAME.CUSTOMER_MIDDLE_NAME = args[1]
-		CustomerTxObjects1[0].CUSTOMER_NAME.CUSTOMER_LAST_NAME   = args[2]
-		CustomerTxObjects1[0].PAN_NUMBER = args[3]
-		CustomerTxObjects1[0].AADHAR_NUMBER = args[4]
-		CustomerTxObjects1[0].CUSTOMER_DOB = args[5]
-		CustomerTxObjects1[0].CUSTOMER_RESIDENT_STATUS = args[6]
-		CustomerTxObjects1[0].CUSTOMER_KYC_PROCESS_DATE = args[7]
-		CustomerTxObjects1[0].CUSTOMER_KYC_FLAG = args[8]
+		CustomerTxObjects[counter].CUSTOMER_NAME.CUSTOMER_FIRST_NAME = args[0]
+		CustomerTxObjects[counter].CUSTOMER_NAME.CUSTOMER_MIDDLE_NAME = args[1]
+		CustomerTxObjects[counter].CUSTOMER_NAME.CUSTOMER_LAST_NAME   = args[2]
+		CustomerTxObjects[counter].PAN_NUMBER = args[3]
+		CustomerTxObjects[counter].AADHAR_NUMBER = args[4]
+		CustomerTxObjects[counter].CUSTOMER_DOB = args[5]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENT_STATUS = args[6]
+		CustomerTxObjects[counter].CUSTOMER_KYC_PROCESS_DATE = args[7]
+		CustomerTxObjects[counter].CUSTOMER_KYC_FLAG = args[8]
 		//Code for CustomerResidenceAddr Initialization
-		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.AddressLine1 = args[9]
-		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.AddressLine2 = args[10]
-		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.PostalCode   = args[11]
-		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.City = args[12]
-		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.Province = args[13]
-		CustomerTxObjects1[0].CUSTOMER_RESIDENCE_ADDR.Country   = args[14]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENCE_ADDR.AddressLine1 = args[9]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENCE_ADDR.AddressLine2 = args[10]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENCE_ADDR.PostalCode   = args[11]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENCE_ADDR.City = args[12]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENCE_ADDR.Province = args[13]
+		CustomerTxObjects[counter].CUSTOMER_RESIDENCE_ADDR.Country   = args[14]
 		//Code for CustomerPermanentAddr Initialization
-		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.AddressLine1 = args[15]
-		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.AddressLine2 = args[16]
-		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.PostalCode   = args[17]
-		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.City = args[18]
-		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.Province = args[19]
-		CustomerTxObjects1[0].CUSTOMER_PERMANENT_ADDR.Country   = args[20]
+		CustomerTxObjects[counter].CUSTOMER_PERMANENT_ADDR.AddressLine1 = args[15]
+		CustomerTxObjects[counter].CUSTOMER_PERMANENT_ADDR.AddressLine2 = args[16]
+		CustomerTxObjects[counter].CUSTOMER_PERMANENT_ADDR.PostalCode   = args[17]
+		CustomerTxObjects[counter].CUSTOMER_PERMANENT_ADDR.City = args[18]
+		CustomerTxObjects[counter].CUSTOMER_PERMANENT_ADDR.Province = args[19]
+		CustomerTxObjects[counter].CUSTOMER_PERMANENT_ADDR.Country   = args[20]
 		//Code for CustomerOfficeAddr Initialization
-		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.AddressLine1 = args[21]
-		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.AddressLine2 = args[22]
-		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.PostalCode   = args[23]
-		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.City = args[24]
-		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.Province = args[25]
-		CustomerTxObjects1[0].CUSTOMER_OFFICE_ADDR.Country   = args[26]
+		CustomerTxObjects[counter].CUSTOMER_OFFICE_ADDR.AddressLine1 = args[21]
+		CustomerTxObjects[counter].CUSTOMER_OFFICE_ADDR.AddressLine2 = args[22]
+		CustomerTxObjects[counter].CUSTOMER_OFFICE_ADDR.PostalCode   = args[23]
+		CustomerTxObjects[counter].CUSTOMER_OFFICE_ADDR.City = args[24]
+		CustomerTxObjects[counter].CUSTOMER_OFFICE_ADDR.Province = args[25]
+		CustomerTxObjects[counter].CUSTOMER_OFFICE_ADDR.Country   = args[26]
 		//Code for the Document Process	
 		fmt.Printf("********pankaj CUSTOMER_DOC:%s\n", args[4])
 		var number_of_docs int
@@ -198,7 +201,7 @@ func (t *CustomerChaincode)  UpdateOrRegisterCustomerDetails(stub shim.Chaincode
 			CustomerDocObj.DOCUMENT_STRING = args[28+(i*2)]
 			CustomerDocObjects1 = append(CustomerDocObjects1,CustomerDocObj)
 		}
-		CustomerTxObjects1[0].CUSTOMER_DOC = CustomerDocObjects1
+		CustomerTxObjects[counter].CUSTOMER_DOC = CustomerDocObjects1
 		
 		jsonAsBytes, _ := json.Marshal(CustomerTxObjects)
 		fmt.Printf("======json print ====:%s\n", jsonAsBytes)
