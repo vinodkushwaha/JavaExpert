@@ -112,8 +112,7 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
   	
     if !s.Contains(string(resAsBytes) , "No Data found") {
 	
-	fmt.Printf("logic for update Customer KYC length :%s\n", len(resAsBytes))
-	fmt.Printf("logic for update Customer KYC :%s\n", resAsBytes)
+	fmt.Printf("Existing Customer KYC found with details :%s\n", resAsBytes)
 	resAsBytes, err = t.UpdateCustomerDetails(stub, PAN_NUMBERS, AADHAR_NUMBERS)
 	 if resAsBytes == nil {
 	   fmt.Printf("error while updateing Customer KYC")
@@ -132,7 +131,15 @@ func (t *CustomerChaincode) Invoke(stub shim.ChaincodeStubInterface, function st
 }
 
 func (t *CustomerChaincode)  UpdateCustomerDetails(stub shim.ChaincodeStubInterface, PAN_NUMBER string, AADHAR_NUMBER string) ([]byte, error) {
-return nil, nil
+	var err error
+	var resAsBytes []byte
+	
+	resAsBytes, err = t.GetCustomerDetails(stub, PAN_NUMBER, AADHAR_NUMBER)
+    fmt.Printf("inside UpdateCustomerDetails function :%s\n", resAsBytes)
+     if err != nil {
+		return nil, errors.New("Failed to update Customer KYC")
+	}
+    return nil, nil
 }
 
 func (t *CustomerChaincode)  RegisterCustomer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
